@@ -4,6 +4,6 @@ import com.raulespinola.msscbrevery.web.model.BeerDto;
 
 import java.util.UUID;
 
-public interface BeerServices {
+public interface BeerService {
     BeerDto getBeerById(UUID beerId);
 }
