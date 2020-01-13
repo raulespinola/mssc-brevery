@@ -1,10 +1,12 @@
 package com.raulespinola.msscbrevery.services;
 
 import com.raulespinola.msscbrevery.web.model.BeerDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class BeerServiceImpl implements BeerService {
 
@@ -23,5 +25,15 @@ public class BeerServiceImpl implements BeerService {
                 .beerStyle("black")
                 .beerName("Quilmes")
                 .build();
+    }
+
+    @Override
+    public void updateBeer(UUID beerId, BeerDto beerDto) {
+        //TODO later
+    }
+
+    @Override
+    public void deleteById(UUID beerId) {
+      log.debug("Creating a beer");
     }
 }
