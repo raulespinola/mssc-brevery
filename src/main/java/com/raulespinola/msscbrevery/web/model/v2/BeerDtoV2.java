@@ -1,4 +1,5 @@
-package com.raulespinola.msscbrevery.web.model;
+package com.raulespinola.msscbrevery.web.model.v2;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +12,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BeerDto {
+public class BeerDtoV2 {
     private UUID id;
     private String beerName;
-    private String beerStyle;
     private Long upc;
+    private BeerStyleEnum beerStyle;
 
 }
