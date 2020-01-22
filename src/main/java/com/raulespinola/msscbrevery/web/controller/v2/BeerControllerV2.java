@@ -5,10 +5,19 @@ import com.raulespinola.msscbrevery.web.model.v2.BeerDtoV2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintDeclarationException;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+
+@Validated
 @RestController
 @RequestMapping("/api/v2/beer")
 public class BeerControllerV2 {
@@ -19,12 +28,12 @@ public class BeerControllerV2 {
     }
 
     @GetMapping({"/{beerId}"})
-    public ResponseEntity<BeerDtoV2> getBeer(@PathVariable UUID beerId){
+    public ResponseEntity<BeerDtoV2> getBeer(@NotNull @PathVariable UUID beerId) {
         return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity handlePost(@RequestBody BeerDtoV2 beerDtoV2){
+    public ResponseEntity handlePost(@Valid @NotNull @RequestBody BeerDtoV2 beerDtoV2) {
         BeerDtoV2 savedDto = beerService.saveNewBeer(beerDtoV2);
 
         HttpHeaders headers = new HttpHeaders();
@@ -35,13 +44,26 @@ public class BeerControllerV2 {
 
     @PutMapping({"/{beerId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void handleUpdate(@PathVariable("beerId")UUID beerId, @RequestBody BeerDtoV2 beerDtoV2){
+    public void handleUpdate(@PathVariable("beerId") UUID beerId, @Valid @RequestBody BeerDtoV2 beerDtoV2) {
         beerService.updateBeer(beerId, beerDtoV2);
-    };
+    }
+
+    ;
 
     @DeleteMapping({"/{beerId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBeer(@PathVariable("beerId") UUID beerId){
+    public void deleteBeer(@PathVariable("beerId") UUID beerId) {
         beerService.deleteById(beerId);
+    }
+
+    @ExceptionHandler(ConstraintDeclarationException.class)
+    public ResponseEntity<List> validationErrorHandler(ConstraintViolationException e) {
+        List<String> errors = new ArrayList<>(e.getConstraintViolations().size());
+
+        e.getConstraintViolations().forEach(constraintViolation -> {
+            errors.add(constraintViolation.getPropertyPath() + ":" + constraintViolation.getMessage());
+        });
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }
